@@ -19,8 +19,8 @@ Press the arrow keys or A, S, D and F keys to move the tiles in the board. The g
 #### 3. Constants
 
 | S.N | Constants   | Usage                                               | Default Value |
-| --- | ----------- | --------------------------------------------------- | ------------- |
-| 1.  | ROWS        | The number of rows the board will have              | 4             |
-| 2.  | COLUMNS     | The number of columns the board will have           | 4             |
-| 3.  | SCORE       | The score the player will accumulate                | 0             |
+| --- | ----------- | --------------------------------------------------- | ------------: |
+| 1.  | ROWS        | The number of rows the board will have              |             4 |
+| 2.  | COLUMNS     | The number of columns the board will have           |             4 |
+| 3.  | SCORE       | The score the player will accumulate                |             0 |
 | 4.  | BOARD_ARRAY | The actual values of the tiles mapped in a 2D array |
