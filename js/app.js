@@ -58,6 +58,41 @@ document.addEventListener("keydown", (event) => {
 	}
 });
 
+let touchstartX = 0;
+let touchstartY = 0;
+let touchendX = 0;
+let touchendY = 0;
+
+const handleSlide = () => {
+	if (touchendX < touchstartX) {
+		moveLeft();
+		gameOver();
+	}
+	if (touchendX > touchstartX) {
+		moveRight();
+		gameOver();
+	}
+	if (touchendY < touchstartY) {
+		moveUp();
+		gameOver();
+	}
+	if (touchendY > touchstartY) {
+		moveDown();
+		gameOver();
+	}
+};
+
+document.addEventListener("touchstart", (event) => {
+	touchstartX = event.changedTouches[0].screenX;
+	touchstartY = event.changedTouches[0].screenY;
+});
+
+document.addEventListener("touchend", (event) => {
+	touchendX = event.changedTouches[0].screenX;
+	touchendY = event.changedTouches[0].screenY;
+	handleSlide();
+});
+
 let BOARD_ARRAY;
 
 const hasAvailableSpace = () => {
@@ -257,6 +292,8 @@ const moveDown = () => {
 };
 
 const startGame = () => {
+	SCORE = 0;
+	SCORE_ELEMENT.innerText = SCORE;
 	GAMEOVER_ELEMENT.classList.remove("d-flex");
 	BOARD.innerText = "";
 	BOARD_ARRAY = [
