@@ -8,13 +8,13 @@ Press the arrow keys or A, S, D and F keys to move the tiles in the board. The g
 
 #### 1. Utilities
 
-| S.N | Function     |                                                          Usage | Params        |
-| --- | ------------ | -------------------------------------------------------------: | ------------- |
-| 1.  | removeZeros  |                          removes all the zeros form a 1D array | array         |
-| 2.  | addZeros     |                          adds zeros until the 1D array is full | array, column |
-| 3.  | isNotSame    | checks if the previous board and the current board is the same | board, board  |
-| 4.  | transpose    |                            transposes a matrix i.e. a 2D array | board         |
-| 5.  | chooseRandom |                          returns a random number from an array | array         |
+| S.N | Function     | Usage                                                          |        Params |
+| --- | ------------ | -------------------------------------------------------------- | ------------: |
+| 1.  | removeZeros  | removes all the zeros form a 1D array                          |         array |
+| 2.  | addZeros     | adds zeros until the 1D array is full                          | array, column |
+| 3.  | isNotSame    | checks if the previous board and the current board is the same |  board, board |
+| 4.  | transpose    | transposes a matrix i.e. a 2D array                            |         board |
+| 5.  | chooseRandom | returns a random number from an array                          |         array |
 
 #### 3. Constants
 
