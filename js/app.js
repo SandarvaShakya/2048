@@ -194,6 +194,19 @@ const mergeEachRow = (board_row) => {
 	return board_row;
 };
 
+const createBoard = (rows, columns) => {
+	let board = [];
+	for (let i = 0; i < rows; i++) {
+		let boardRow = [];
+		for (let j = 0; j < columns; j++) {
+			boardRow.push(0);
+		}
+		board.push(boardRow);
+	}
+
+	return board;
+};
+
 /**
  * Function to intialize and start the game
  */
@@ -202,12 +215,7 @@ const startGame = () => {
 	SCORE_ELEMENT.innerText = SCORE;
 	GAMEOVER_ELEMENT.classList.remove("d-flex");
 	BOARD.innerText = "";
-	BOARD_ARRAY = [
-		[0, 0, 0, 0],
-		[0, 0, 0, 0],
-		[0, 0, 0, 0],
-		[0, 0, 0, 0],
-	];
+	BOARD_ARRAY = createBoard(ROWS, COLUMNS);
 
 	for (let row = 0; row < ROWS; row++) {
 		for (let column = 0; column < COLUMNS; column++) {
@@ -231,6 +239,7 @@ window.onload = () => {
 		HIGH_SCORE_ELEMENT.innerText = HIGH_SCORE;
 	}
 	HIGH_SCORE_ELEMENT.innerText = HIGH_SCORE;
+	BOARD.style.setProperty("--rows", ROWS);
 	startGame();
 };
 
