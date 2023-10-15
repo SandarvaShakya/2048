@@ -1,25 +1,3 @@
-const ROWS = 4;
-const COLUMNS = 4;
-
-// Scores
-let SCORE = 0;
-let didNotMoveLeft = false;
-let didNotMoveRight = false;
-let didNotMoveUp = false;
-let didNotMoveDown = false;
-let HIGH_SCORE = localStorage.getItem("HIGH_SCORE");
-if (!HIGH_SCORE) localStorage.setItem("HIGH_SCORE", 0);
-
-const SCORE_ELEMENT = document.getElementById("score");
-const HIGH_SCORE_ELEMENT = document.getElementById("high-score");
-const GAMEOVER_ELEMENT = document.getElementById("gameover");
-const RESTART_BUTTON = document.getElementById("restart");
-
-HIGH_SCORE_ELEMENT.innerText = HIGH_SCORE;
-
-// The board where tiles generate
-const BOARD = document.getElementById("board");
-
 // All event listeners
 document.addEventListener("keydown", (event) => {
 	switch (event.key) {
@@ -58,43 +36,10 @@ document.addEventListener("keydown", (event) => {
 	}
 });
 
-let touchstartX = 0;
-let touchstartY = 0;
-let touchendX = 0;
-let touchendY = 0;
-
-const handleSlide = () => {
-	if (touchendX < touchstartX) {
-		moveLeft();
-		gameOver();
-	}
-	if (touchendX > touchstartX) {
-		moveRight();
-		gameOver();
-	}
-	if (touchendY < touchstartY) {
-		moveUp();
-		gameOver();
-	}
-	if (touchendY > touchstartY) {
-		moveDown();
-		gameOver();
-	}
-};
-
-document.addEventListener("touchstart", (event) => {
-	touchstartX = event.changedTouches[0].screenX;
-	touchstartY = event.changedTouches[0].screenY;
-});
-
-document.addEventListener("touchend", (event) => {
-	touchendX = event.changedTouches[0].screenX;
-	touchendY = event.changedTouches[0].screenY;
-	handleSlide();
-});
-
-let BOARD_ARRAY;
-
+/**
+ *	Function to check if there is available space in the board
+ * @returns true if the array has an empty space
+ */
 const hasAvailableSpace = () => {
 	for (let row = 0; row < ROWS; row++) {
 		for (let column = 0; column < COLUMNS; column++) {
@@ -106,6 +51,10 @@ const hasAvailableSpace = () => {
 	return false;
 };
 
+/**
+ * Function to generate the actual tile in array as well as the DOM
+ * @returns null
+ */
 const generateTile = () => {
 	if (!hasAvailableSpace()) return;
 
@@ -124,6 +73,11 @@ const generateTile = () => {
 	}
 };
 
+/**
+ * Function to check if there is any playable move or not
+ * @param {BOARD_ARRAY} board
+ * @returns true if the game has a playable move
+ */
 const isMergeAble = (board) => {
 	if (hasAvailableSpace()) {
 		return true;
@@ -147,23 +101,44 @@ const isMergeAble = (board) => {
 	return false;
 };
 
+/**
+ *	Function to check and display the gameover screen
+ * @returns null if the game is no tover
+ */
 const gameOver = () => {
 	if (!isMergeAble(BOARD_ARRAY)) {
 		GAMEOVER_ELEMENT.classList.add("d-flex");
 	} else return;
 };
 
+/**
+ * Funtion to check if the BOARD has 0 in the array
+ * @param {INT} row
+ * @param {INT} column
+ * @returns true if the BOARD has a 0 in its array
+ */
 const isZero = (row, column) => {
 	if (BOARD_ARRAY[row][column] === 0) return true;
 	return false;
 };
 
+/**
+ * Function to create the HTML element in the DOM
+ * @param {INT} row
+ * @param {INT} column
+ * @returns the HTML Element with id row-column
+ */
 const createTile = (row, column) => {
 	const TILE = document.createElement("div");
 	TILE.id = `${row}-${column}`;
 	return TILE;
 };
 
+/**
+ * Function to add the css classes and the value of the tile
+ * @param {HTMLElement} tile
+ * @param {INT} tileValue
+ */
 const updateTile = (tile, tileValue) => {
 	tile.innerText = "";
 	tile.classList = "";
@@ -176,29 +151,22 @@ const updateTile = (tile, tileValue) => {
 };
 
 // SCORES
-
+/**
+ * Function to upste the score and highscore
+ */
 const updateScore = () => {
 	SCORE_ELEMENT.innerText = SCORE;
-	checkHighScore();
+	if (SCORE > HIGH_SCORE) {
+		localStorage.setItem("HIGH_SCORE", SCORE);
+		HIGH_SCORE_ELEMENT.innerText = localStorage.getItem("HIGH_SCORE");
+	}
 };
 
-const checkHighScore = () => {
-	if (SCORE > HIGH_SCORE) setHighScore(SCORE);
-};
-
-const setHighScore = (score) => {
-	localStorage.setItem("HIGH_SCORE", score);
-	HIGH_SCORE_ELEMENT.innerText = localStorage.getItem("HIGH_SCORE");
-};
-
-const updateHighScore = () => {
-	HIGH_SCORE = localStorage.getItem(HIGH_SCORE);
-	if (!HIGH_SCORE) localStorage.setItem("HIGH_SCORE", SCORE);
-};
-
-// TILES
-
-const createAndUpdateTile = (row, board_array) => {
+/**
+ * Function to update the tile and the score
+ * @param {INT} row
+ */
+const createAndUpdateTile = (row) => {
 	for (let column = 0; column < COLUMNS; column++) {
 		const TILE = document.getElementById(`${row}-${column}`);
 		updateTile(TILE, BOARD_ARRAY[row][column]);
@@ -206,6 +174,11 @@ const createAndUpdateTile = (row, board_array) => {
 	}
 };
 
+/**
+ * Function to merge the two tiles if they are same
+ * @param {1D ARRAY} board_row
+ * @returns 1D Array
+ */
 const mergeEachRow = (board_row) => {
 	board_row = removeZeros(board_row);
 
@@ -221,76 +194,9 @@ const mergeEachRow = (board_row) => {
 	return board_row;
 };
 
-// MOVEMENTS
-
-const moveLeft = () => {
-	let originalBoard = [...BOARD_ARRAY];
-	didNotMoveLeft = false;
-	for (let row = 0; row < ROWS; row++) {
-		let board_row = BOARD_ARRAY[row];
-		board_row = mergeEachRow(board_row);
-		BOARD_ARRAY[row] = board_row;
-		createAndUpdateTile(row);
-	}
-
-	if (isNotSame(originalBoard, BOARD_ARRAY)) generateTile();
-	else didNotMoveLeft = true;
-};
-
-const moveRight = () => {
-	let originalBoard = JSON.parse(JSON.stringify(BOARD_ARRAY));
-	didNotMoveRight = false;
-	for (let row = 0; row < ROWS; row++) {
-		let board_row = BOARD_ARRAY[row];
-		board_row.reverse();
-		board_row = mergeEachRow(board_row);
-		board_row.reverse();
-		BOARD_ARRAY[row] = board_row;
-		createAndUpdateTile(row);
-	}
-	if (isNotSame(originalBoard, BOARD_ARRAY)) generateTile();
-	else didNotMoveRight = true;
-};
-
-const moveUp = () => {
-	let originalBoard = [...BOARD_ARRAY];
-	didNotMoveUp = false;
-	let transposedBoard = transpose(BOARD_ARRAY);
-	for (let row = 0; row < ROWS; row++) {
-		let board_row = transposedBoard[row];
-		board_row = mergeEachRow(board_row);
-		transposedBoard[row] = board_row;
-	}
-	BOARD_ARRAY = transpose(transposedBoard);
-
-	for (let row = 0; row < ROWS; row++) {
-		createAndUpdateTile(row);
-	}
-	if (isNotSame(originalBoard, BOARD_ARRAY)) generateTile();
-	else didNotMoveUp = true;
-};
-
-const moveDown = () => {
-	let originalBoard = [...BOARD_ARRAY];
-
-	didNotMoveDown = false;
-	let transposedBoard = transpose(BOARD_ARRAY);
-	for (let row = 0; row < ROWS; row++) {
-		let board_row = transposedBoard[row];
-		board_row.reverse();
-		board_row = mergeEachRow(board_row);
-		board_row.reverse();
-		transposedBoard[row] = board_row;
-	}
-	BOARD_ARRAY = transpose(transposedBoard);
-
-	for (let row = 0; row < ROWS; row++) {
-		createAndUpdateTile(row);
-	}
-	if (isNotSame(originalBoard, BOARD_ARRAY)) generateTile();
-	else didNotMoveDown = true;
-};
-
+/**
+ * Function to intialize and start the game
+ */
 const startGame = () => {
 	SCORE = 0;
 	SCORE_ELEMENT.innerText = SCORE;
@@ -318,6 +224,13 @@ const startGame = () => {
 };
 
 window.onload = () => {
+	HIGH_SCORE = localStorage.getItem("HIGH_SCORE");
+	if (!HIGH_SCORE) {
+		localStorage.setItem("HIGH_SCORE", 0);
+		HIGH_SCORE = localStorage.getItem("HIGH_SCORE");
+		HIGH_SCORE_ELEMENT.innerText = HIGH_SCORE;
+	}
+	HIGH_SCORE_ELEMENT.innerText = HIGH_SCORE;
 	startGame();
 };
 
